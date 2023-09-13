@@ -5,6 +5,13 @@ from instr import *
 from final_win import *
 time1 = QTime(0, 0, 15)
 time2 = QTime(0, 0, 45)
+time3 = QTime(0, 1, 0)
+class Experiment():
+    def __init__(self, age, test1, test2, test3):
+        self.age = age
+        self.t1 = test1
+        self.t2 = test2
+        self.t3 = test3
 class TestWin(QWidget):
     def __init__(self):
         super().__init__()
@@ -68,6 +75,7 @@ class TestWin(QWidget):
         self.button4.clicked.connect(self.next_click)
         self.button1.clicked.connect(self.timer_test)
         self.button2.clicked.connect(self.timer_sits)
+        self.button3.clicked.connect(self.timer_last)
     def timer_test(self):
         self.timer = QTimer()
         self.timer.start(1000)
@@ -92,6 +100,24 @@ class TestWin(QWidget):
         self.text_timer.setStyleSheet("color: rgb(0,0,0)")
         if time2.toString("hh:mm:ss") == "00:00:00":
             self.timer.stop()
+    def timer_last(self):
+        self.timer = QTimer()
+        self.timer.start(1000)
+        self.timer.timeout.connect(self.timer3Event)
+    def timer3Event(self):
+        global time3
+        time3 = time3.addSecs(-1)
+        self.text_timer.setText(time3.toString("hh:mm:ss"))
+        self.text_timer.setFont(QFont("Times", 36, QFont.Bold))
+        self.text_timer.setStyleSheet("color: rgb(0,0,0)")
+        if 45 <= int((time3.toString("hh:mm:ss"))[6:8]) <= 60:
+            self.text_timer.setStyleSheet("color: rgb(0,255,0)")
+        if 0 <= int((time3.toString("hh:mm:ss"))[6:8]) <= 15:
+            self.text_timer.setStyleSheet("color: rgb(0,255,0)")
+        if time3.toString("hh:mm:ss") == "00:00:00":
+            self.timer.stop()
+            self.text_timer.setStyleSheet("color = rgb(0,0,0)")
     def next_click(self):
         self.hide()
-        self.fw = FinalWindow()
+        self.exp = Experiment(self.edit2.text(), self.edit3.text(), self.edit4.text(), self.edit5.text())
+        self.tw = FinalWindow(self.exp)
